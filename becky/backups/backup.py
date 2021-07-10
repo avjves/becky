@@ -1,4 +1,5 @@
 import natsort
+import time
 
 from becky.providers.local_provider import LocalProvider
 from becky.scanners.local_differential_scanner import LocalDifferentialScanner
@@ -10,7 +11,8 @@ class Backup:
         self.backup_locations = values.get('backup_locations', [])
         self.provider_params = values.get('provider_params', {})
         self.scanner_params = values.get('scanner_params', {})
-        self.saved_keys = ['name', 'backup_locations', 'provider_params', 'scanner_params']
+        self.timestamps = values.get('timestamps', [])
+        self.saved_keys = ['name', 'backup_locations', 'provider_params', 'scanner_params', 'timestamps']
         self.diffs = values.get('diffs', {})
         self.saved_files = values.get('saved_files', [])
         self.db = db
@@ -82,15 +84,17 @@ class Backup:
         """
         Runs a backup.
         """
+        current_timestamp = int(time.time())
         scanner = self._get_scanner()
         provider = self._get_provider()
         new_files, diffs = scanner.scan_files()
-        saved_files = provider.backup_files(new_files)
+        saved_files = provider.backup_files(new_files, current_timestamp)
         print(f"Backed up {len(saved_files)} new files.")
         all_saved_files = self.saved_files + saved_files
 
         self.db.save('diffs', diffs)
         self.db.save('saved_files', all_saved_files)
+        self.db.add('timestamps', [current_timestamp], default=[])
 
     def save(self):
         """

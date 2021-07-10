@@ -26,8 +26,8 @@ class ShelveDatabase:
         db = shelve.open(self.path, writeback=True)
         return db
 
-    def add(self, key, value):
-        data = self.get(key)
+    def add(self, key, value, default=None):
+        data = self.get(key, default)
         data = data + value
         self.save(key, data)
 
@@ -41,13 +41,13 @@ class ShelveDatabase:
             db[key] = value
         db.close()
 
-    def get(self, key):
+    def get(self, key, default=None):
         db = self._open_db()
         if self.identifier:
             data = db.get(self.identifier)
-            data = data.get(key)
+            data = data.get(key, default)
         else:
-            data = db.get(key, None)
+            data = db.get(key, default)
         db.close()
         return data
 
