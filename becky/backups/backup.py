@@ -78,24 +78,10 @@ class Backup:
         """
         applicable_files = [f for f in self.saved_files if f['type'] == 'file' and f['directory'] == path and f['date'] <= timestamp]
         applicable_folders = [f for f in self.saved_files if f['type'] == 'directory' and f['directory'] == path and f['date'] <= timestamp]
-        file_ts = {}
-        folder_ts = {}
-        for item in applicable_files:
-            if item['name'] not in file_ts:
-                file_ts[item['name']] = item['date']
-            else:
-                if file_ts[item['name']] < item['date']:
-                    file_ts[item['name']] = item['date']
-
-        for item in applicable_folders:
-            if item['name'] not in folder_ts:
-                folder_ts[item['name']] = item['date']
-            else:
-                if folder_ts[item['name']] < item['date']:
-                    folder_ts[item['name']] = item['date']
-        files_to_print = [f for f in applicable_files if file_ts[f['name']] == f['date']]
-        folders_to_print = [f for f in applicable_folders if folder_ts[f['name']] == f['date']]
+        files_to_print = self._get_newest_versions(self, applicable_files)
+        folders_to_print = self._get_newest_versions(self, applicable_folders)
         to_print = files_to_print + folders_to_print
+
         for f in to_print:
             print(f"{f['name']} --- {f['date']}")
 
@@ -118,14 +104,7 @@ class Backup:
         anything about how this actual process works.
         """
         applicable_items = [f for f in self.saved_files if (f['name'] == path or path in f['directory'] or f['name'] in path) and f['date'] <= timestamp]
-        ts = {}
-        for item in applicable_items:
-            if item['name'] not in ts:
-                ts[item['name']] = item['date']
-            else:
-                if ts[item['name']] < item['date']:
-                    ts[item['name']] = item['date']
-        files_to_restore = [f for f in applicable_items if ts[f['name']] == f['date']]
+        files_to_restore = self._get_newest_versions(applicable_items)
         provider = self._get_provider()
         restored_files, skipped_files = provider.restore_files(files_to_restore, restore_path)
         print(f"Restored {len(restored_files)} files, skipped {len(skipped_files)} files.")
@@ -153,6 +132,19 @@ class Backup:
         """
         for key in self.saved_keys:
             self.db.save(key, getattr(self, key))
+
+    def _get_newest_versions(self, items):
+        ts = {}
+        for item in items:
+            if item['name'] not in ts:
+                ts[item['name']] = item['date']
+            else:
+                if ts[item['name']] < item['date']:
+                   ts[item['name']] = item['date']
+
+        newest_items = [f for f in items if ts[f['name']] == f['date']]
+        return newest_items
+
 
     def _get_provider(self):
         provider = LocalProvider(parameters=self.provider_params, saved_files=self.saved_files)
