@@ -76,6 +76,17 @@ class BackupManager:
         backup = self.get_backup(backup_name)
         backup.print_files_at_path(path, timestamp)
 
+    def restore_files(self, cli_args):
+        """
+        Restores file/folder(recursive) at a given timestamp to a restore folder.
+        """
+        backup_name = cli_args.name
+        path = cli_args.path
+        restore_path = cli_args.restore_path
+        timestamp = int(cli_args.timestamp)
+        backup = self.get_backup(backup_name)
+        backup.restore_files(path, restore_path, timestamp)
+
 
     def run_backup(self, cli_args):
         """

@@ -111,6 +111,26 @@ class Backup:
         for (file_name, diff_info) in diffs:
             print(f"{file_name} --> previous: {diff_info['previous']}, current: {diff_info['current']}")
 
+    def restore_files(self, path, restore_path, timestamp):
+        """
+        Restores file/folder(recursive) at a given timestamp to a restore folder.
+        The actual restore happens inside the provider, so the backup doesn't know
+        anything about how this actual process works.
+        """
+        applicable_items = [f for f in self.saved_files if (f['name'] == path or path in f['directory'] or f['name'] in path) and f['date'] <= timestamp]
+        ts = {}
+        for item in applicable_items:
+            if item['name'] not in ts:
+                ts[item['name']] = item['date']
+            else:
+                if ts[item['name']] < item['date']:
+                    ts[item['name']] = item['date']
+        files_to_restore = [f for f in applicable_items if ts[f['name']] == f['date']]
+        provider = self._get_provider()
+        restored_files, skipped_files = provider.restore_files(files_to_restore, restore_path)
+        print(f"Restored {len(restored_files)} files, skipped {len(skipped_files)} files.")
+
+
     def run(self):
         """
         Runs a backup.

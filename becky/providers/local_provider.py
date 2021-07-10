@@ -2,6 +2,7 @@ import os
 import uuid
 import time
 from shutil import copyfile
+from natsort import natsorted
 
 class LocalProvider:
 
@@ -29,6 +30,29 @@ class LocalProvider:
                 saved_files.append({'name': file_in, 'directory': directory_path, 'path': file_out, 'type': 'file', 'date': current_timestamp})
         return saved_files
 
+
+    def restore_files(self, files_to_restore, restore_path):
+        if not os.path.exists(restore_path): os.makedirs(restore_path)
+        files_to_restore = natsorted(files_to_restore, key=lambda x: x['name'])
+        files_restored = []
+        files_skipped = []
+        for f in files_to_restore:
+            try:
+                file_out = self._join_file_path(restore_path, f['name'])
+                if f['type'] == 'directory':
+                    os.mkdir(file_out)
+                else:
+                    file_in = f['path']
+                    if os.path.exists(file_out): 
+                        files_skipped.append(f)
+                        continue
+                    self._copy_file(file_in, file_out)
+                files_restored.append(f)
+            except:
+                files_skipped.append(f)
+        return files_restored, files_skipped
+
+
     def _generate_output_path(self, copy_path):
         new_file_name = str(uuid.uuid4())
         file_out = os.path.join(copy_path, new_file_name)
@@ -39,4 +63,15 @@ class LocalProvider:
 
     def _get_parameter(self, key):
         return self.parameters[key]
+
+    def _join_file_path(self, *args):
+      """
+      Preprocesses the given values and runs them through os.path.join.
+      """
+      args = list(args)
+      if args[0] == '':
+          args[0] = '/'
+      for i in range(1, len(args)): # First value can start with /
+          args[i] = args[i].strip('/')
+      return os.path.join(*args)
 

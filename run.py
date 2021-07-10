@@ -33,6 +33,11 @@ def add_files_params(parser):
     parser.add_argument('--path', help="Shows any backed up files at the given path.", required=True)
     parser.add_argument('--timestamp', help="Specify the timestamp to use.")
 
+def add_restore_params(parser):
+    parser.add_argument('--path', help="The file/folder (recursive) to be restored.", required=True)
+    parser.add_argument('--restore_path', help="Location of restore folder.", required=True)
+    parser.add_argument('--timestamp', help="Specify the timestamp to use.", required=True)
+
 
 
 if __name__ == "__main__":
@@ -57,6 +62,9 @@ if __name__ == "__main__":
     files_parser = subparsers.add_parser('files')
     add_files_params(files_parser)
 
+    restore_parser = subparsers.add_parser('restore')
+    add_restore_params(restore_parser)
+
     parser.add_argument('--name', required=True)
 
     args = parser.parse_args()
@@ -76,6 +84,8 @@ if __name__ == "__main__":
         backup_manager.delete(args)
     elif args.action == 'files':
         backup_manager.show_files(args)
+    elif args.action == 'restore':
+        backup_manager.restore_files(args)
     
         
 
