@@ -69,6 +69,37 @@ class Backup:
             if 'path' not in saved_file: continue
             print(f"{saved_file['name']} @ {saved_file['date']} --> {saved_file['path']}")
 
+    def print_files_at_path(self, path, timestamp):
+        """
+        Prints all files/folders backed up at a specific path at a specific time.
+        Shows all files that were backed up AT OR BEFORE the timestamp. Only shows
+        the newest edition of each file. Can show both file and a folder even if they
+        share their name.
+        """
+        applicable_files = [f for f in self.saved_files if f['type'] == 'file' and f['directory'] == path and f['date'] <= timestamp]
+        applicable_folders = [f for f in self.saved_files if f['type'] == 'directory' and f['directory'] == path and f['date'] <= timestamp]
+        file_ts = {}
+        folder_ts = {}
+        for item in applicable_files:
+            if item['name'] not in file_ts:
+                file_ts[item['name']] = item['date']
+            else:
+                if file_ts[item['name']] < item['date']:
+                    file_ts[item['name']] = item['date']
+
+        for item in applicable_folders:
+            if item['name'] not in folder_ts:
+                folder_ts[item['name']] = item['date']
+            else:
+                if folder_ts[item['name']] < item['date']:
+                    folder_ts[item['name']] = item['date']
+        files_to_print = [f for f in applicable_files if file_ts[f['name']] == f['date']]
+        folders_to_print = [f for f in applicable_folders if folder_ts[f['name']] == f['date']]
+        to_print = files_to_print + folders_to_print
+        for f in to_print:
+            print(f"{f['name']} --- {f['date']}")
+
+
     def print_diffs(self):
         """
         Prints all available diffs.

@@ -18,13 +18,15 @@ class LocalProvider:
             os.makedirs(copy_path)
         saved_files = []
         for file_in_index, file_in in enumerate(new_files):
+            directory_path = file_in.rsplit("/", 1)[0]
+            if not directory_path: directory_path = '/'
+            file_out = self._generate_output_path(copy_path)
             if os.path.isdir(file_in): 
-                saved_files.append({'name': file_in, 'type': 'directory', 'date': current_timestamp})
+                saved_files.append({'name': file_in, 'directory': directory_path, 'path': file_out, 'type': 'directory', 'date': current_timestamp})
                 continue
             else:
-                file_out = self._generate_output_path(copy_path)
                 self._copy_file(file_in, file_out)
-                saved_files.append({'name': file_in, 'path': file_out, 'type': 'file', 'date': current_timestamp})
+                saved_files.append({'name': file_in, 'directory': directory_path, 'path': file_out, 'type': 'file', 'date': current_timestamp})
         return saved_files
 
     def _generate_output_path(self, copy_path):

@@ -64,6 +64,19 @@ class BackupManager:
         elif cli_args.show_type == 'diffs':
             backup.print_diffs()
 
+    def show_files(self, cli_args):
+        """
+        Shows files at a given path at the specified time.
+        If no time was specified, showing the latest backup.
+        """
+        backup_name = cli_args.name
+        path = cli_args.path
+        timestamp = cli_args.timestamp
+        timestamp = int(timestamp) if timestamp else 10000000000000 #just a big number
+        backup = self.get_backup(backup_name)
+        backup.print_files_at_path(path, timestamp)
+
+
     def run_backup(self, cli_args):
         """
         Runs a backup.

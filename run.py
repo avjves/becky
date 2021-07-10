@@ -29,6 +29,11 @@ def add_delete_params(parser):
     diffs_parser = subparsers.add_parser('diffs')
     saves_parser = subparsers.add_parser('saves')
 
+def add_files_params(parser):
+    parser.add_argument('--path', help="Shows any backed up files at the given path.", required=True)
+    parser.add_argument('--timestamp', help="Specify the timestamp to use.")
+
+
 
 if __name__ == "__main__":
 
@@ -49,6 +54,9 @@ if __name__ == "__main__":
     delete_parser = subparsers.add_parser('delete')
     add_delete_params(delete_parser)
 
+    files_parser = subparsers.add_parser('files')
+    add_files_params(files_parser)
+
     parser.add_argument('--name', required=True)
 
     args = parser.parse_args()
@@ -66,6 +74,8 @@ if __name__ == "__main__":
         backup_manager.run_backup(args)
     elif args.action == 'delete':
         backup_manager.delete(args)
+    elif args.action == 'files':
+        backup_manager.show_files(args)
     
         
 
