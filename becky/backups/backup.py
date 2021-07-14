@@ -121,6 +121,8 @@ class Backup:
         saved_files = provider.backup_files(new_files, current_timestamp)
         print(f"Backed up {len(saved_files)} new files.")
         all_saved_files = self.saved_files + saved_files
+        self.saved_files = all_saved_files
+        self.diffs = diffs
 
         self.db.save('diffs', diffs)
         self.db.save('saved_files', all_saved_files)
