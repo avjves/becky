@@ -127,6 +127,8 @@ class Backup:
         self.db.save('diffs', diffs)
         self.db.save('saved_files', all_saved_files)
         self.db.add('timestamps', [current_timestamp], default=[])
+        backup_info = {'timestamp': current_timestamp, 'new_files': saved_files}
+        return backup_info
 
     def save(self):
         """
