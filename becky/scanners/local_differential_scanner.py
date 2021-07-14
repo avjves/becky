@@ -1,4 +1,5 @@
 import os
+from becky.utils.utils import path_to_folders
 
 class LocalDifferentialScanner:
 
@@ -41,19 +42,11 @@ class LocalDifferentialScanner:
         if not os.path.exists(location):
             return []
         if os.path.isfile(location):
-            return self._path_to_folders(location)
+            return path_to_folders(location)
         else:
-            scanned_files = self._path_to_folders(location) + self._walk_folders(location)
+            scanned_files = path_to_folders(location) + self._walk_folders(location)
         return scanned_files
 
-
-    def _path_to_folders(self, location):
-        folders = []
-        while location:
-            folders.append(location)
-            location = location.rsplit('/', 1)[0]
-        return folders
-        
 
     def _walk_folders(self, location):
         files = set()

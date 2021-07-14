@@ -3,6 +3,7 @@ import uuid
 import time
 from shutil import copyfile
 from natsort import natsorted
+from becky.utils.utils import join_file_path
 
 class LocalProvider:
 
@@ -38,7 +39,7 @@ class LocalProvider:
         files_skipped = []
         for f in files_to_restore:
             try:
-                file_out = self._join_file_path(restore_path, f['name'])
+                file_out = join_file_path(restore_path, f['name'])
                 if f['type'] == 'directory':
                     os.mkdir(file_out)
                 else:
@@ -64,14 +65,4 @@ class LocalProvider:
     def _get_parameter(self, key):
         return self.parameters[key]
 
-    def _join_file_path(self, *args):
-      """
-      Preprocesses the given values and runs them through os.path.join.
-      """
-      args = list(args)
-      if args[0] == '':
-          args[0] = '/'
-      for i in range(1, len(args)): # First value can start with /
-          args[i] = args[i].strip('/')
-      return os.path.join(*args)
 
