@@ -5,14 +5,13 @@ class BackupManager:
 
     def __init__(self):
         self.db = ShelveDatabase('test.db')
-        pass
 
     def add_backup_location(self, cli_args):
         """
         Adds a new local path to be backed up.
         """
-        backup = self.get_backup(cli_args.name)
-        backup.add_backup_location(cli_args.path)
+        backup = self.get_backup(cli_args['name'])
+        backup.add_backup_location(cli_args['path'])
         backup.save()
         print("backup location added.")
 
@@ -20,11 +19,11 @@ class BackupManager:
         """
         Used to add a provider/scanner parameter.
         """
-        backup = self.get_backup(cli_args.name)
-        if cli_args.type == 'provider':
-            backup.add_provider_param(cli_args.key, cli_args.value)
-        elif cli_args.type == 'scanner':
-            backup.add_scanner_param(cli_args.key, cli_args.value)
+        backup = self.get_backup(cli_args['name'])
+        if cli_args['type'] == 'provider':
+            backup.add_provider_param(cli_args['key'], cli_args['value'])
+        elif cli_args['type'] == 'scanner':
+            backup.add_scanner_param(cli_args['key'], cli_args['value'])
         else:
             print("Wrong type for param!")
             return
@@ -45,9 +44,9 @@ class BackupManager:
         """
         Adds a new backup.
         """
-        backup = self.get_backup(cli_args.name)
+        backup = self.get_backup(cli_args['name'])
         print(backup)
-        for key, value in cli_args.__dict__.items():
+        for key, value in cli_args.items():
             if key == 'action': continue
             print(key, value)
 
@@ -55,13 +54,14 @@ class BackupManager:
         """
         Prints information about a backup.
         """
-        backup_name = cli_args.name
+        backup_name = cli_args['name']
         backup = self.get_backup(backup_name)
-        if cli_args.show_type == 'info':
+        show_type = cli_args['show_type']
+        if show_type == 'info':
             backup.print_details()
-        elif cli_args.show_type == 'saves':
+        elif show_type == 'saves':
             backup.print_saved_files()
-        elif cli_args.show_type == 'diffs':
+        elif show_type == 'diffs':
             backup.print_diffs()
 
     def show_files(self, cli_args):
@@ -69,9 +69,9 @@ class BackupManager:
         Shows files at a given path at the specified time.
         If no time was specified, showing the latest backup.
         """
-        backup_name = cli_args.name
-        path = cli_args.path
-        timestamp = cli_args.timestamp
+        backup_name = cli_args['name']
+        path = cli_args['path']
+        timestamp = cli_args['timestamp']
         timestamp = int(timestamp) if timestamp else 10000000000000 #just a big number
         backup = self.get_backup(backup_name)
         backup.print_files_at_path(path, timestamp)
@@ -80,10 +80,10 @@ class BackupManager:
         """
         Restores file/folder(recursive) at a given timestamp to a restore folder.
         """
-        backup_name = cli_args.name
-        path = cli_args.path
-        restore_path = cli_args.restore_path
-        timestamp = int(cli_args.timestamp)
+        backup_name = cli_args['name']
+        path = cli_args['path']
+        restore_path = cli_args['restore_path']
+        timestamp = int(cli_args['timestamp'])
         backup = self.get_backup(backup_name)
         backup.restore_files(path, restore_path, timestamp)
 
@@ -92,24 +92,29 @@ class BackupManager:
         """
         Runs a backup.
         """
-        backup_name = cli_args.name
+        backup_name = cli_args['name']
         backup = self.get_backup(backup_name)
         backup.run()
 
     def delete(self, cli_args):
-
-        backup_name = cli_args.name
+        """
+        Delete handler. Can be called to delete saved diffs or saved files.
+        Deleting diffs/saves is more of a debugging feature.
+        """
+        backup_name = cli_args['name']
         backup = self.get_backup(backup_name)
-        if cli_args.action_delete == 'diffs':
+        delete_action = cli_args['action_delete']
+        if delete_action == 'diffs':
             backup.delete_diffs()
-        elif cli_args.action_delete == 'saves':
+        elif delete_action == 'saves':
             backup.delete_saves()
 
     def create(self, cli_args):
         """
         Creates a new backup.
         """
-        data = self.db.get(cli_args.name)
+        backup_name = cli_args['name']
+        data = self.db.get(backup_name)
         if data:
             print("A backup has already been created with the given name.")
             return

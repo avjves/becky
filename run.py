@@ -65,27 +65,33 @@ if __name__ == "__main__":
     restore_parser = subparsers.add_parser('restore')
     add_restore_params(restore_parser)
 
-    parser.add_argument('--name', required=True)
+    list_parser = subparsers.add_parser('list')
+
+
+    parser.add_argument('--name')
 
     args = parser.parse_args()
+    vargs = vars(args)
     backup_manager = BackupManager()
     if args.action == 'create':
-        backup_manager.create(args)
+        backup_manager.create(vargs)
     elif args.action == 'add':
         if args.action_add == 'location':
-            backup_manager.add_backup_location(args)
+            backup_manager.add_backup_location(vargs)
         elif args.action_add == 'param':
-            backup_manager.add_parameter(args)
+            backup_manager.add_parameter(vargs)
     elif args.action == 'show':
-        backup_manager.show_backup(args)
+        backup_manager.show_backup(vargs)
     elif args.action == 'run':
-        backup_manager.run_backup(args)
+        backup_manager.run_backup(vargs)
     elif args.action == 'delete':
-        backup_manager.delete(args)
+        backup_manager.delete(vargs)
     elif args.action == 'files':
-        backup_manager.show_files(args)
+        backup_manager.show_files(vargs)
     elif args.action == 'restore':
-        backup_manager.restore_files(args)
+        backup_manager.restore_files(vargs)
+    elif args.action == 'list':
+        backup_manager.list_backups(vargs)
     
         
 
