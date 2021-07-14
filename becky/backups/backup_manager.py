@@ -50,6 +50,13 @@ class BackupManager:
             if key == 'action': continue
             print(key, value)
 
+    def list_backups(self, cli_args):
+        """
+        List all current backups.
+        """
+        for backup_i, backup_name in enumerate(self.db.keys()):
+            print(f"Backup {backup_i}: {backup_name}")
+
     def show_backup(self, cli_args):
         """
         Prints information about a backup.
@@ -108,6 +115,10 @@ class BackupManager:
             backup.delete_diffs()
         elif delete_action == 'saves':
             backup.delete_saves()
+        elif delete_action == 'backup':
+            self.db.delete(backup_name)
+        else:
+            raise NotImplementedError
 
     def create(self, cli_args):
         """
@@ -119,7 +130,9 @@ class BackupManager:
             print("A backup has already been created with the given name.")
             return
         else:
-            backup = Backup(self.db, cli_args)
+            backup_db = self.db.get_backup_db(backup_name)
+            backup = Backup(backup_db, cli_args)
             backup.save()
-            print("Backup added.")
+            print(f"Backup added with name {backup_name}.")
+            return backup
 

@@ -34,7 +34,7 @@ class ShelveDatabase:
     def save(self, key, value):
         db = self._open_db()
         if self.identifier:
-            data = db.get(self.identifier)
+            data = db.get(self.identifier, {})
             data[key] = value
             db[self.identifier] = data
         else:
@@ -50,4 +50,26 @@ class ShelveDatabase:
             data = db.get(key, default)
         db.close()
         return data
+
+
+    def delete(self, key):
+        db = self._open_db()
+        if self.identifier:
+            data = db.get(self.identifier)
+            del data[key]
+            db[self.identifier] = data
+        else:
+            del db[key]
+        db.close()
+
+    def keys(self):
+        db = self._open_db()
+        if self.identifier:
+            data = db.get(self.identifier)
+            key_list = list(data.keys())
+        else:
+            key_list = list(db.keys())
+        db.close()
+        return key_list
+
 
