@@ -28,7 +28,7 @@ class BackupManager:
             print("Wrong type for param!")
             return
         backup.save()
-        print("Param added successfully.")
+        print(f"Param {cli_args['key']} added successfully.")
             
 
     def get_backup(self, backup_name):
