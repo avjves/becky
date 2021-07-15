@@ -78,8 +78,8 @@ class Backup:
         """
         applicable_files = [f for f in self.saved_files if f['type'] == 'file' and f['directory'] == path and f['date'] <= timestamp]
         applicable_folders = [f for f in self.saved_files if f['type'] == 'directory' and f['directory'] == path and f['date'] <= timestamp]
-        files_to_print = self._get_newest_versions(self, applicable_files)
-        folders_to_print = self._get_newest_versions(self, applicable_folders)
+        files_to_print = self._get_newest_versions(applicable_files)
+        folders_to_print = self._get_newest_versions(applicable_folders)
         to_print = files_to_print + folders_to_print
 
         for f in to_print:
