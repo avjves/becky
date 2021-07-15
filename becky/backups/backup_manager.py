@@ -67,9 +67,11 @@ class BackupManager:
         if show_type == 'info':
             backup.print_details()
         elif show_type == 'saves':
-            backup.print_saved_files()
+            backup.print_saved_files(all_files=True)
         elif show_type == 'diffs':
             backup.print_diffs()
+        elif show_type == 'files':
+            backup.print_saved_files(all_files=False)
 
     def show_files(self, cli_args):
         """

@@ -60,14 +60,24 @@ class Backup:
         for key in self.saved_keys:
             print(f"{key} -- {getattr(self, key)}")
 
-    def print_saved_files(self):
+    def print_saved_files(self, all_files):
         """
         Prints the saved files for this current model.
+        If all_files == True, prints all saved_files, otherwise
+        prints just the latest version of files without any timestamps.
         """
         self.saved_files.sort(key=lambda x: x['name'])
-        for saved_file in self.saved_files:
-            if 'path' not in saved_file: continue
-            print(f"{saved_file['name']} @ {saved_file['date']} --> {saved_file['path']}")
+        if all_files:
+            for saved_file in self.saved_files:
+                if 'path' not in saved_file: continue
+                print(f"{saved_file['name']} @ {saved_file['date']} --> {saved_file['path']}")
+        else:
+            newest_files = self._get_newest_versions(self.saved_files)
+            for saved_file in newest_files:
+                print(f"{saved_file['name']}")
+
+            
+
 
     def print_files_at_path(self, path, timestamp):
         """
