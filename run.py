@@ -21,6 +21,13 @@ def add_create_params(parser):
     parser.add_argument('--scanner', required=True)
     parser.add_argument('--scanner_param', action='append', nargs='*')
 
+def add_cron_params(parser):
+    parser.add_argument('--name', required=True)
+    parser.add_argument('--enable', dest='cron_enabled', action='store_true')
+    parser.add_argument('--disable', dest='cron_enabled', action='store_false') 
+    parser.add_argument('--schedule')
+    parser.set_defaults(cron_enabled=True)
+
 def add_show_params(parser):
     parser.add_argument('--type', dest='show_type', help="What data to show. info / saves / diffs", required=True)
 
@@ -67,6 +74,9 @@ if __name__ == "__main__":
 
     list_parser = subparsers.add_parser('list')
 
+    cron_parser = subparsers.add_parser('cron')
+    add_cron_params(cron_parser)
+
 
     parser.add_argument('--name')
 
@@ -92,6 +102,12 @@ if __name__ == "__main__":
         backup_manager.restore_files(vargs)
     elif args.action == 'list':
         backup_manager.list_backups(vargs)
+    elif args.action == 'cron':
+        if args.cron_enabled:
+            if not args.schedule:
+                parser.error('cron + enabled requires --schedule.')
+        backup_manager.set_cron(vargs)
+
     
         
 

@@ -1,3 +1,4 @@
+from crontab import CronTab
 from becky.databases.database import ShelveDatabase
 from becky.backups.backup import Backup
 
@@ -139,4 +140,26 @@ class BackupManager:
             backup.save()
             print(f"Backup added with name {backup_name}.")
             return backup
+
+    def set_cron(self, cli_args):
+        """
+        Either enables or disables a cronjob that runs the backup given the schedule.
+        """
+        backup_name = cli_args['name']
+        cron_enabled = cli_args['cron_enabled']
+        if cron_enabled:
+            cron = CronTab(user=True)
+            cron.remove_all(comment=f'Becky - {backup_name}') # Remove any previous schedule set for this job
+            cron_schedule = cli_args['schedule']
+            job = cron.new(command=f"cd /home/avjves/projects/becky-cli && python3 /home/avjves/projects/becky-cli/run.py --name '{backup_name}' run", comment=f"Becky - {backup_name}")
+            job.setall(cron_schedule)
+            job.enable()
+            cron.write()
+            print("Cron enabled.")
+        else: # delete
+            cron = CronTab(user=True)
+            cron.remove_all(comment=f'Becky - {backup_name}') 
+            cron.write()
+            print("Cron disabled.")
+        
 
