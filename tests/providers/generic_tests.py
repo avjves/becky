@@ -124,7 +124,6 @@ def _test_backup_model_single_folder(self, backup_model):
         new_files = new_files.union(set(new_folders))
         backup_model.add_backup_location(test_directory.name)
         backup_info = backup_model.run()
-        print("folder_to_restore", folder_to_restore)
         restored_files = backup_model.restore_files(folder_to_restore, restore_directory.name, timestamp=backup_info['timestamp'])
         files_to_be_restored = glob.glob(folder_to_restore + '/**/*', recursive=True)
         files_to_be_restored = [f for f in files_to_be_restored if not os.path.isdir(f)]

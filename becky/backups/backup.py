@@ -2,6 +2,7 @@ import natsort
 import time
 
 from becky.providers.local_provider import LocalProvider
+from becky.providers.remote_provider import RemoteProvider
 from becky.scanners.local_differential_scanner import LocalDifferentialScanner
 
 class Backup:
