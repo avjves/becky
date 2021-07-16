@@ -24,6 +24,8 @@ class BackupManager:
             backup.add_provider_param(cli_args['key'], cli_args['value'])
         elif cli_args['type'] == 'scanner':
             backup.add_scanner_param(cli_args['key'], cli_args['value'])
+        elif cli_args['type'] == 'backup':
+            backup.add_param(cli_args['key'], cli_args['value'])
         else:
             print("Wrong type for param!")
             return

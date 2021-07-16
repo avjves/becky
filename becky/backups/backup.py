@@ -42,6 +42,12 @@ class Backup:
         """
         self.scanner_params[key] = value
 
+    def add_param(self, key, value):
+        """
+        Adds a top level param - mostly used to set provider etc.
+        """
+        setattr(self, key, value)
+
     def delete_diffs(self):
         """
         Deletes any saved diffs from this backup.
