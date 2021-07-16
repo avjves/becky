@@ -3,6 +3,7 @@ import time
 
 from becky.providers.local_provider import LocalProvider
 from becky.providers.remote_provider import RemoteProvider
+from becky.providers.s3_provider import S3Provider
 from becky.scanners.local_differential_scanner import LocalDifferentialScanner
 
 class Backup:
@@ -168,6 +169,8 @@ class Backup:
             provider = LocalProvider(parameters=self.provider_params, saved_files=self.saved_files)
         elif self.provider == 'remote':
             provider = RemoteProvider(parameters=self.provider_params, saved_files=self.saved_files)
+        elif self.provider == 's3':
+            provider = S3Provider(parameters=self.provider_params, saved_files=self.saved_files)
         else:
             raise NotImplementedError(f"Provider {self.provider} has not been implemented yet.")
         return provider
