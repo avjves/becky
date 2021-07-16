@@ -10,10 +10,12 @@ class Backup:
     def __init__(self, db, values):
         self.name = values.get('name')
         self.backup_locations = values.get('backup_locations', [])
+        self.provider = values.get('provider')
+        self.scanner = values.get('scanner')
         self.provider_params = values.get('provider_params', {})
         self.scanner_params = values.get('scanner_params', {})
         self.timestamps = values.get('timestamps', [])
-        self.saved_keys = ['name', 'backup_locations', 'provider_params', 'scanner_params', 'timestamps']
+        self.saved_keys = ['name', 'backup_locations', 'provider_params', 'scanner_params', 'timestamps', 'provider', 'scanner']
         self.diffs = values.get('diffs', {})
         self.saved_files = values.get('saved_files', [])
         self.db = db
@@ -162,7 +164,12 @@ class Backup:
 
 
     def _get_provider(self):
-        provider = LocalProvider(parameters=self.provider_params, saved_files=self.saved_files)
+        if self.provider == 'local':
+            provider = LocalProvider(parameters=self.provider_params, saved_files=self.saved_files)
+        elif self.provider == 'remote':
+            provider = RemoteProvider(parameters=self.provider_params, saved_files=self.saved_files)
+        else:
+            raise NotImplementedError(f"Provider {self.provider} has not been implemented yet.")
         return provider
 
     def _get_scanner(self):
