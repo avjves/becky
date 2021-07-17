@@ -1,11 +1,14 @@
+import getpass
 from crontab import CronTab
+
 from becky_cli.becky.databases.database import ShelveDatabase
 from becky_cli.becky.backups.backup import Backup
 
 class BackupManager:
 
     def __init__(self):
-        self.db = ShelveDatabase('test.db')
+        current_user = getpass.getuser()
+        self.db = ShelveDatabase(f"/home/{current_user}/.becky.db")
 
     def add_backup_location(self, cli_args):
         """
