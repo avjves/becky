@@ -6,7 +6,7 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(name='Becky',
-      version='0.6',
+      version='0.7',
       description='Becky backupper',
       author='Aleksi Vesanto',
       author_email='avjves@gmail.com',
