@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from becky.backups.backup_manager import BackupManager
+from becky_cli.becky.backups.backup_manager import BackupManager
 
 
 def add_add_params(parser):
@@ -46,8 +46,7 @@ def add_restore_params(parser):
     parser.add_argument('--timestamp', help="Specify the timestamp to use.", required=True)
 
 
-
-if __name__ == "__main__":
+def main():
 
     parser = argparse.ArgumentParser(description='CLI backupper')
     subparsers = parser.add_subparsers(help='Action to take', dest='action', required=True)
@@ -109,5 +108,5 @@ if __name__ == "__main__":
         backup_manager.set_cron(vargs)
 
     
-        
-
+if __name__ == "__main__":
+    main()
