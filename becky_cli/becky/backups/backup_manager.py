@@ -154,7 +154,7 @@ class BackupManager:
             cron = CronTab(user=True)
             cron.remove_all(comment=f'Becky - {backup_name}') # Remove any previous schedule set for this job
             cron_schedule = cli_args['schedule']
-            job = cron.new(command=f"cd /home/avjves/projects/becky-cli && python3 /home/avjves/projects/becky-cli/run.py --name '{backup_name}' run", comment=f"Becky - {backup_name}")
+            job = cron.new(command=f"becky --name '{backup_name}' run", comment=f"Becky - {backup_name}")
             job.setall(cron_schedule)
             job.enable()
             cron.write()
