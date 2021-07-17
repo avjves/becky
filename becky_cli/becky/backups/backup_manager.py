@@ -1,6 +1,6 @@
 from crontab import CronTab
-from becky.databases.database import ShelveDatabase
-from becky.backups.backup import Backup
+from becky_cli.becky.databases.database import ShelveDatabase
+from becky_cli.becky.backups.backup import Backup
 
 class BackupManager:
 

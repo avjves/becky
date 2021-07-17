@@ -4,7 +4,7 @@ import shelve
 import tempfile
 import uuid
 from shutil import copyfile
-from becky.utils.utils import remove_prefix, join_file_path, path_to_folders
+from becky_cli.becky.utils.utils import remove_prefix, join_file_path, path_to_folders
 
 """
 A remote backup provider that can backup files from the local system

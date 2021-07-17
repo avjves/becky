@@ -1,10 +1,10 @@
 import natsort
 import time
 
-from becky.providers.local_provider import LocalProvider
-from becky.providers.remote_provider import RemoteProvider
-from becky.providers.s3_provider import S3Provider
-from becky.scanners.local_differential_scanner import LocalDifferentialScanner
+from becky_cli.becky.providers.local_provider import LocalProvider
+from becky_cli.becky.providers.remote_provider import RemoteProvider
+from becky_cli.becky.providers.s3_provider import S3Provider
+from becky_cli.becky.scanners.local_differential_scanner import LocalDifferentialScanner
 
 class Backup:
 

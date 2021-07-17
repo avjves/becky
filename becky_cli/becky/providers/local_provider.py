@@ -3,7 +3,7 @@ import uuid
 import time
 from shutil import copyfile
 from natsort import natsorted
-from becky.utils.utils import join_file_path
+from becky_cli.becky.utils.utils import join_file_path
 
 class LocalProvider:
 

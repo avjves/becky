@@ -1,5 +1,5 @@
 import os
-from becky.utils.utils import path_to_folders
+from becky_cli.becky.utils.utils import path_to_folders
 
 class LocalDifferentialScanner:
 

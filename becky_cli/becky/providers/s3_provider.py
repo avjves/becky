@@ -5,7 +5,7 @@ import subprocess
 from tempfile import TemporaryDirectory
 from shutil import copyfile
 
-from becky.utils.utils import remove_prefix, join_file_path, path_to_folders
+from becky_cli.becky.utils.utils import remove_prefix, join_file_path, path_to_folders
 
 """
 A provider that can backup to and from any S3 compatible object storage server in a
