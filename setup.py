@@ -1,14 +1,23 @@
 from distutils.core import setup
+import pathlib
+import setuptools
+
+HERE = pathlib.Path(__file__).parent
+README = (HERE / "README.md").read_text()
 
 setup(name='Becky',
-      version='0.1',
+      version='0.4',
       description='Becky backupper',
       author='Aleksi Vesanto',
       author_email='avjves@gmail.com',
       packages=['becky_cli'],
+      # include_package_data=True,
       entry_points={
         'console_scripts': [
-            'becky=run:main',
+            'becky=becky_cli.run:main',
         ],
       },
+      license='MIT',
+      long_description=README,
+      long_description_content_type='text/markdown',
 )
