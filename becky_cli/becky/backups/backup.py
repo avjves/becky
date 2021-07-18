@@ -15,8 +15,9 @@ class Backup:
         self.scanner = values.get('scanner')
         self.provider_params = values.get('provider_params', {})
         self.scanner_params = values.get('scanner_params', {})
+        self.notifier_params = values.get('notifier_params', {})
         self.timestamps = values.get('timestamps', [])
-        self.saved_keys = ['name', 'backup_locations', 'provider_params', 'scanner_params', 'timestamps', 'provider', 'scanner']
+        self.saved_keys = ['name', 'backup_locations', 'provider_params', 'scanner_params', 'notifier_params', 'timestamps', 'provider', 'scanner']
         self.diffs = values.get('diffs', {})
         self.saved_files = values.get('saved_files', [])
         self.db = db

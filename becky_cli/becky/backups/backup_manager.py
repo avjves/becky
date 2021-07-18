@@ -3,6 +3,7 @@ from crontab import CronTab
 
 from becky_cli.becky.databases.database import ShelveDatabase
 from becky_cli.becky.backups.backup import Backup
+from becky_cli.becky.utils.notifier import Notifier
 
 class BackupManager:
 
@@ -35,7 +36,17 @@ class BackupManager:
             return
         backup.save()
         print(f"Param {cli_args['key']} added successfully.")
-            
+
+    def add_notifier(self, cli_args):
+        """
+        Used to add email parameters.
+        """
+        backup_name = cli_args['name']
+        backup = self.get_backup(backup_name)
+        notifier = Notifier(backup)
+        notifier.set_parameters(cli_args)
+        print("Set notifier parameters.")
+        backup.save()
 
     def get_backup(self, backup_name):
         """
@@ -143,6 +154,21 @@ class BackupManager:
             backup.save()
             print(f"Backup added with name {backup_name}.")
             return backup
+
+    def test(self, cli_args):
+        """
+        Function for testing different functionality.
+        """
+        if cli_args['action_test'] == 'notifier':
+            backup_name = cli_args['name']
+            backup = self.get_backup(backup_name)
+            notifier = Notifier(backup)
+            notifier.send_notification(cli_args['title'], cli_args['text'])
+            print("Notification sent.")
+        else:
+            NotImplementedError(f"Test for {cli_args['type']} has not been implemented.")
+
+
 
     def set_cron(self, cli_args):
         """

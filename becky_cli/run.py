@@ -14,6 +14,12 @@ def add_add_params(parser):
     param_parser.add_argument('--key', required=True)
     param_parser.add_argument('--value', required=True)
 
+    notifier_parser = subparsers.add_parser('notifier')
+    notifier_parser.add_argument('--type')
+    notifier_parser.add_argument('--smtp_server')
+    notifier_parser.add_argument('--sender_email')
+    notifier_parser.add_argument('--receiver_email')
+    notifier_parser.add_argument('--smtp_password')
 
 def add_create_params(parser):
     parser.add_argument('--provider', required=True)
@@ -45,6 +51,11 @@ def add_restore_params(parser):
     parser.add_argument('--restore_path', help="Location of restore folder.", required=True)
     parser.add_argument('--timestamp', help="Specify the timestamp to use.", required=True)
 
+def add_test_params(parser):
+    subparsers = parser.add_subparsers(help='What to test', dest='action_test', required=True)
+    notifier_parser = subparsers.add_parser('notifier')
+    notifier_parser.add_argument('--title', required=True)
+    notifier_parser.add_argument('--text', required=True)
 
 def main():
 
@@ -76,6 +87,9 @@ def main():
     cron_parser = subparsers.add_parser('cron')
     add_cron_params(cron_parser)
 
+    test_parser = subparsers.add_parser('test')
+    add_test_params(test_parser)
+
 
     parser.add_argument('--name')
 
@@ -89,6 +103,8 @@ def main():
             backup_manager.add_backup_location(vargs)
         elif args.action_add == 'param':
             backup_manager.add_parameter(vargs)
+        elif args.action_add == 'notifier':
+            backup_manager.add_notifier(vargs)
     elif args.action == 'show':
         backup_manager.show_backup(vargs)
     elif args.action == 'run':
@@ -106,7 +122,8 @@ def main():
             if not args.schedule:
                 parser.error('cron + enabled requires --schedule.')
         backup_manager.set_cron(vargs)
-
+    elif args.action == 'test':
+        backup_manager.test(vargs)
     
 if __name__ == "__main__":
     main()
