@@ -34,8 +34,15 @@ class Notifier:
         if notifier_type == 'smtp':
             self._send_smtp_notification(title, text)
         else:
-            print(f"Notification type {notifier_type} is not valid!")
+            self._send_print_notification(title, text)
 
+
+    def _send_print_notification(self, title, text):
+        """
+        Default notification type.
+        Just prints the title + text without sending it anywhere.
+        """
+        print(f'Title: {title}\nText: {text}')
 
     def _send_smtp_notification(self, title, text):
         """

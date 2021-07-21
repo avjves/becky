@@ -1,10 +1,12 @@
 import natsort
+import traceback
 import time
 
 from becky_cli.becky.providers.local_provider import LocalProvider
 from becky_cli.becky.providers.remote_provider import RemoteProvider
 from becky_cli.becky.providers.s3_provider import S3Provider
 from becky_cli.becky.scanners.local_differential_scanner import LocalDifferentialScanner
+from becky_cli.becky.utils.notifier import Notifier
 
 class Backup:
 
@@ -63,6 +65,16 @@ class Backup:
         without re-verifying the files.
         """
         self.db.save('saved_files', [])
+
+    def notify(self, title, text):
+        """
+        Sends a notification with the given title / text.
+        The notification can be something like an email etc.
+        Depends on the used parameters.
+        """
+        notifier = self._get_notifier()
+        notifier.send_notification(title, text)
+
 
     def print_details(self):
         """
@@ -135,20 +147,24 @@ class Backup:
         """
         Runs a backup.
         """
-        current_timestamp = int(time.time())
-        scanner = self._get_scanner()
-        provider = self._get_provider()
-        new_files, diffs = scanner.scan_files()
-        saved_files = provider.backup_files(new_files, current_timestamp)
-        print(f"Backed up {len(saved_files)} new files.")
-        all_saved_files = self.saved_files + saved_files
-        self.saved_files = all_saved_files
-        self.diffs = diffs
+        try:
+            current_timestamp = int(time.time())
+            scanner = self._get_scanner()
+            provider = self._get_provider()
+            new_files, diffs = scanner.scan_files()
+            saved_files = provider.backup_files(new_files, current_timestamp)
+            print(f"Backed up {len(saved_files)} new files.")
+            all_saved_files = self.saved_files + saved_files
+            self.saved_files = all_saved_files
+            self.diffs = diffs
 
-        self.db.save('diffs', diffs)
-        self.db.save('saved_files', all_saved_files)
-        self.db.add('timestamps', [current_timestamp], default=[])
-        backup_info = {'timestamp': current_timestamp, 'new_files': saved_files}
+            self.db.save('diffs', diffs)
+            self.db.save('saved_files', all_saved_files)
+            self.db.add('timestamps', [current_timestamp], default=[])
+            backup_info = {'timestamp': current_timestamp, 'new_files': saved_files}
+        except Exception as exc_obj:
+            tb_str = ''.join(traceback.format_exception(None, exc_obj, exc_obj.__traceback__))
+            self.notify(title=f'Backup completely or partially failed.', text=f'Failed to run backup. The error message is: \n {tb_str}')
         return backup_info
 
     def save(self):
@@ -185,4 +201,10 @@ class Backup:
     def _get_scanner(self):
         scanner = LocalDifferentialScanner(parameters=self.scanner_params, backup_locations=self.backup_locations, diffs=self.diffs)
         return scanner
+
+
+    def _get_notifier(self):
+        notifier = Notifier(self)
+        return notifier
+    
 

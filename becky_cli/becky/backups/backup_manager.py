@@ -162,8 +162,7 @@ class BackupManager:
         if cli_args['action_test'] == 'notifier':
             backup_name = cli_args['name']
             backup = self.get_backup(backup_name)
-            notifier = Notifier(backup)
-            notifier.send_notification(cli_args['title'], cli_args['text'])
+            backup.notify(cli_args['title'], cli_args['text'])
             print("Notification sent.")
         else:
             NotImplementedError(f"Test for {cli_args['type']} has not been implemented.")
